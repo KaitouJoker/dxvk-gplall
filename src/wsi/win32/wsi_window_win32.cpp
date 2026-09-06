@@ -217,6 +217,11 @@ namespace dxvk::wsi {
     
     style   &= ~WS_OVERLAPPEDWINDOW;
     exstyle &= ~WS_EX_OVERLAPPEDWINDOW;
+#if defined(WS_EX_NOREDIRECTIONBITMAP)
+    exstyle |= WS_EX_NOREDIRECTIONBITMAP;
+#else
+    exstyle |= 0x00200000L;
+#endif
     
     ::SetWindowLongW(hWindow, GWL_STYLE, style);
     ::SetWindowLongW(hWindow, GWL_EXSTYLE, exstyle);
@@ -238,8 +243,13 @@ namespace dxvk::wsi {
           DxvkWindowState* pState) {
     // Only restore the window style if the application hasn't
     // changed them. This is in line with what native DXGI does.
+#if defined(WS_EX_NOREDIRECTIONBITMAP)
+    constexpr LONG noRedirBit = WS_EX_NOREDIRECTIONBITMAP;
+#else
+    constexpr LONG noRedirBit = 0x00200000L;
+#endif
     LONG curStyle   = ::GetWindowLongW(hWindow, GWL_STYLE)   & ~WS_VISIBLE;
-    LONG curExstyle = ::GetWindowLongW(hWindow, GWL_EXSTYLE) & ~WS_EX_TOPMOST;
+    LONG curExstyle = ::GetWindowLongW(hWindow, GWL_EXSTYLE) & ~(WS_EX_TOPMOST | noRedirBit);
 
     if (curStyle   == (pState->win.style   & ~(WS_VISIBLE    | WS_OVERLAPPEDWINDOW))
      && curExstyle == (pState->win.exstyle & ~(WS_EX_TOPMOST | WS_EX_OVERLAPPEDWINDOW))) {
