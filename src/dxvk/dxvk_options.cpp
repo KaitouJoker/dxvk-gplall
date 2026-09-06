@@ -24,7 +24,7 @@ namespace dxvk {
     disableNvLowLatency2  = config.getOption<Tristate>("dxvk.disableNvLowLatency2",   Tristate::Auto);
     hideIntegratedGraphics = config.getOption<bool>   ("dxvk.hideIntegratedGraphics", false);
     zeroMappedMemory      = config.getOption<bool>    ("dxvk.zeroMappedMemory",       false);
-    allowFse              = config.getOption<bool>    ("dxvk.allowFse",               false);
+    allowFse              = config.getOption<bool>    ("dxvk.allowFse",               true);
     framePace             = config.getOption<std::string>("dxvk.framePace",           "max-frame-latency");
     lowLatencyOffset      = config.getOption<int32_t> ("dxvk.lowLatencyOffset",       0);
     lowLatencyAllowCpuFramesOverlap

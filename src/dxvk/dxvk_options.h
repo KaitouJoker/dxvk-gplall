@@ -67,7 +67,7 @@ namespace dxvk {
     bool zeroMappedMemory = false;
 
     /// Allows full-screen exclusive mode on Windows
-    bool allowFse = false;
+    bool allowFse = true;
 
     /// Whether to enable tiler optimizations
     Tristate tilerMode = Tristate::Auto;

@@ -216,6 +216,7 @@ namespace dxvk::wsi {
     LONG exstyle = ::GetWindowLongW(hWindow, GWL_EXSTYLE);
     
     style   &= ~WS_OVERLAPPEDWINDOW;
+    style   |= WS_POPUP;
     exstyle &= ~WS_EX_OVERLAPPEDWINDOW;
 #if defined(WS_EX_NOREDIRECTIONBITMAP)
     exstyle |= WS_EX_NOREDIRECTIONBITMAP;
@@ -248,10 +249,10 @@ namespace dxvk::wsi {
 #else
     constexpr LONG noRedirBit = 0x00200000L;
 #endif
-    LONG curStyle   = ::GetWindowLongW(hWindow, GWL_STYLE)   & ~WS_VISIBLE;
+    LONG curStyle   = ::GetWindowLongW(hWindow, GWL_STYLE)   & ~(WS_VISIBLE | WS_POPUP);
     LONG curExstyle = ::GetWindowLongW(hWindow, GWL_EXSTYLE) & ~(WS_EX_TOPMOST | noRedirBit);
 
-    if (curStyle   == (pState->win.style   & ~(WS_VISIBLE    | WS_OVERLAPPEDWINDOW))
+    if (curStyle   == (pState->win.style   & ~(WS_VISIBLE    | WS_OVERLAPPEDWINDOW | WS_POPUP))
      && curExstyle == (pState->win.exstyle & ~(WS_EX_TOPMOST | WS_EX_OVERLAPPEDWINDOW))) {
       ::SetWindowLongW(hWindow, GWL_STYLE,   pState->win.style);
       ::SetWindowLongW(hWindow, GWL_EXSTYLE, pState->win.exstyle);
