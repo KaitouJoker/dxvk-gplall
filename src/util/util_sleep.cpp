@@ -9,11 +9,8 @@
 #if defined(__x86_64__) || defined(_M_X64) || defined(__i386__) || defined(_M_IX86)
 #include <immintrin.h>
 #define CPU_PAUSE() _mm_pause()
-// ARM-specific pause macros to save energy during busy-waiting
-#elif defined(__arm__) || defined(__aarch64__) || defined(_M_ARM) || defined(_M_ARM64)
-#define CPU_PAUSE() __asm__ volatile("isb" ::: "memory")
 #else
-// Nothing on other CPU architectures
+// Fallback
 #define CPU_PAUSE() do {} while(0)
 #endif
 
