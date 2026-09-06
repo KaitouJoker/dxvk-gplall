@@ -1170,8 +1170,15 @@ namespace dxvk {
     if (m_frameLatencyCap)
       maxFrameLatency = std::min(maxFrameLatency, m_frameLatencyCap);
 
+    const auto& options = m_device->config();
+    if (options.framePace != "max-frame-latency" || options.minimizeSwapchainLatency == Tristate::True) {
+      // In low-latency or minimized swapchain mode, clamp frame latency to 1
+      // to eliminate multi-frame queueing delay between CPU and GPU.
+      maxFrameLatency = std::min(maxFrameLatency, 1u);
+    }
+
     maxFrameLatency = std::min(maxFrameLatency, m_presentParams.BackBufferCount + 1);
-    return maxFrameLatency;
+    return std::max(maxFrameLatency, 1u);
   }
 
 
