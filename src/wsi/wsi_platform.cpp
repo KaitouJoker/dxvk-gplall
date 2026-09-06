@@ -27,16 +27,17 @@ namespace dxvk::wsi {
     if (s_refcount++ > 0)
       return;
 
-    std::string hint = dxvk::env::getEnvVar("DXVK_WSI_DRIVER");
-    if (hint == "") {
-        // At least for Windows, it is reasonable to fall back to a default;
-        // for other platforms however we _need_ to know which WSI to use!
 #if defined(DXVK_WSI_WIN32)
-        hint = "Win32";
-#else
-        throw DxvkError("DXVK_WSI_DRIVER environment variable unset");
-#endif
+    std::string hint = dxvk::env::getEnvVar("DXVK_WSI_DRIVER");
+    if (hint == "" || hint == "Win32") {
+      if (Win32WSI.createDriver(&s_driver))
+        return;
     }
+#else
+    std::string hint = dxvk::env::getEnvVar("DXVK_WSI_DRIVER");
+    if (hint == "")
+      throw DxvkError("DXVK_WSI_DRIVER environment variable unset");
+#endif
 
     bool success = false;
     for (const WsiBootstrap *b : wsiBootstrap) {
