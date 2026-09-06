@@ -1864,6 +1864,7 @@ namespace dxvk {
     if (unlikely(!m_inScene))
       return D3DERR_INVALIDCALL;
 
+    m_drawCallCount = 0;
     ConsiderFlush(GpuFlushType::ImplicitStrongHint);
 
     m_inScene = false;
@@ -3058,6 +3059,11 @@ namespace dxvk {
       ctx->draw(1u, &draw);
     });
 
+    if (++m_drawCallCount >= 250) {
+      m_drawCallCount = 0;
+      ConsiderFlush(GpuFlushType::ImplicitWeakHint);
+    }
+
     return D3D_OK;
   }
 
@@ -3110,6 +3116,11 @@ namespace dxvk {
 
       ctx->drawIndexed(1u, &draw);
     });
+
+    if (++m_drawCallCount >= 250) {
+      m_drawCallCount = 0;
+      ConsiderFlush(GpuFlushType::ImplicitWeakHint);
+    }
 
     return D3D_OK;
   }

@@ -1694,6 +1694,7 @@ namespace dxvk {
 
     uint64_t                        m_flushSeqNum = 0ull;
     GpuFlushTracker                 m_flushTracker;
+    uint32_t                        m_drawCallCount = 0u;
 
     std::atomic<int64_t>            m_availableMemory = { 0 };
 

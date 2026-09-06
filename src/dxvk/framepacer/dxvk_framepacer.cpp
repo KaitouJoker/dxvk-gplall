@@ -62,6 +62,7 @@ namespace dxvk {
         Logger::info( "Frame pace: low-latency" );
         GpuFlushTracker::m_minPendingSubmissions = 1;
         GpuFlushTracker::m_minChunkCount = 1;
+        GpuFlushTracker::m_maxChunkCount = 4;
         m_calibratedDeviceTimestamps.enable();
         m_mode = std::make_unique<LowLatencyMode>(mode, &m_latencyMarkersStorage, &m_frameSync, options, firstFrameId);
         break;
@@ -70,6 +71,7 @@ namespace dxvk {
         Logger::info( "Frame pace: low-latency-vrr" );
         GpuFlushTracker::m_minPendingSubmissions = 1;
         GpuFlushTracker::m_minChunkCount = 1;
+        GpuFlushTracker::m_maxChunkCount = 4;
         m_calibratedDeviceTimestamps.enable();
         m_mode = std::make_unique<LowLatencyMode>(mode, &m_latencyMarkersStorage, &m_frameSync, options, firstFrameId, refreshRate);
         break;
@@ -78,6 +80,7 @@ namespace dxvk {
         Logger::info( "Frame pace: min-latency" );
         GpuFlushTracker::m_minPendingSubmissions = 1;
         GpuFlushTracker::m_minChunkCount = 1;
+        GpuFlushTracker::m_maxChunkCount = 4;
         m_frameSync.m_waitLatency = 1;
         m_mode = std::make_unique<MinLatencyMode>(mode, &m_latencyMarkersStorage, &m_frameSync, firstFrameId);
         break;
