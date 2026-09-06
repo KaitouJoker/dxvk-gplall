@@ -1,0 +1,12 @@
+﻿# Release Notes
+Release Note*.md
+Release_Note*.md
+Release_Notes*.md
+
+# Build directories
+build/
+build-*/
+*.o
+*.a
+*.dll
+*.exe
