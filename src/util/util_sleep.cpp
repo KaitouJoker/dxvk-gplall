@@ -62,15 +62,18 @@ namespace dxvk {
       auto NtSetTimerResolution = reinterpret_cast<NtSetTimerResolutionProc>(
         ::GetProcAddress(ntdll, "NtSetTimerResolution"));
 
-      ULONG min, max, cur;
+      ULONG minRes, maxRes, curRes;
 
       // Wine's implementation of these functions is a stub as of 6.10, which is fine
       // since it uses select() in NtDelayExecution. This is only relevant for Windows.
-      if (NtQueryTimerResolution && !NtQueryTimerResolution(&min, &max, &cur)) {
-        m_sleepGranularity = TimerDuration(1ms);
+      if (NtQueryTimerResolution && !NtQueryTimerResolution(&minRes, &maxRes, &curRes)) {
+        // maxRes is the finest resolution supported by system (typically 5000 = 0.5ms on Win10/11)
+        ULONG desiredRes = (maxRes > 0 && maxRes <= 10000) ? maxRes : 5000UL;
 
-        if (NtSetTimerResolution && !NtSetTimerResolution(10000, TRUE, &cur)) {
-          Logger::info(str::format("Setting timer interval to ", (double(10000) / 10.0), " us"));
+        if (NtSetTimerResolution && !NtSetTimerResolution(desiredRes, TRUE, &curRes)) {
+          Logger::info(str::format("Setting timer interval to ", (double(curRes) / 10.0), " us"));
+          m_sleepGranularity = TimerDuration(curRes > 0 ? curRes : desiredRes);
+        } else {
           m_sleepGranularity = TimerDuration(1ms);
         }
       }
@@ -102,9 +105,8 @@ namespace dxvk {
     while (remaining > sleepThreshold) {
       TimerDuration sleepDuration = remaining - sleepThreshold;
 
-      // Try long sleep, only if sleepDuration is
-      // longer than sleepThreshold, which equals to 2 ms
-      if (sleepDuration > 2ms)
+      // Try long sleep if sleepDuration exceeds the sleep threshold
+      if (sleepDuration > sleepThreshold)
         systemSleep(sleepDuration);
 
       t1 = dxvk::high_resolution_clock::now();
