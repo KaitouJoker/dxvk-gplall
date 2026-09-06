@@ -1148,7 +1148,17 @@ namespace dxvk {
   uint32_t Presenter::pickImageCount(
           uint32_t                  minImageCount,
           uint32_t                  maxImageCount) {
-    uint32_t count = minImageCount + 1;
+    const auto& options = m_device->config();
+    bool minimizeLatency = false;
+
+    if (options.minimizeSwapchainLatency == Tristate::True) {
+      minimizeLatency = true;
+    } else if (options.minimizeSwapchainLatency == Tristate::Auto) {
+      // Auto-minimize swapchain buffering if low-latency frame pacing is enabled
+      minimizeLatency = (options.framePace != "max-frame-latency");
+    }
+
+    uint32_t count = minimizeLatency ? minImageCount : (minImageCount + 1);
 
     if (count > maxImageCount && maxImageCount != 0)
       count = maxImageCount;

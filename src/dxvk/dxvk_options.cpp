@@ -31,6 +31,7 @@ namespace dxvk {
                           = config.getOption<bool>    ("dxvk.lowLatencyAllowCpuFramesOverlap", true);
     deviceFilter          = config.getOption<std::string>("dxvk.deviceFilter",        "");
     tilerMode             = config.getOption<Tristate>("dxvk.tilerMode",              Tristate::Auto);
+    minimizeSwapchainLatency = config.getOption<Tristate>("dxvk.minimizeSwapchainLatency", Tristate::Auto);
 
     auto budget = config.getOption<int32_t>("dxvk.maxMemoryBudget", 0);
     maxMemoryBudget = VkDeviceSize(std::max(budget, 0)) << 20u;
