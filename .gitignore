@@ -1,7 +1,11 @@
-﻿# Release Notes
+# Release Notes
 Release Note*.md
 Release_Note*.md
 Release_Notes*.md
+
+# Release output directory (DLLs, prototype builds)
+Release/
+release/
 
 # Build directories
 build/
