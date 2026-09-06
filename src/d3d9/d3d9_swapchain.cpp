@@ -162,7 +162,10 @@ namespace dxvk {
     UpdatePresentRegion(pSourceRect, pDestRect);
     UpdatePresentParameters();
 
-    if (!SwapWithFrontBuffer() && m_parent->GetOptions()->extraFrontbuffer) {
+    const auto& dxvkOptions = m_device->config();
+    bool skipExtraFrontbuffer = (dxvkOptions.framePace != "max-frame-latency" || dxvkOptions.minimizeSwapchainLatency == Tristate::True);
+
+    if (!SwapWithFrontBuffer() && m_parent->GetOptions()->extraFrontbuffer && !skipExtraFrontbuffer) {
       // We never actually rotate in the front buffer.
       // Just blit to it for GetFrontBufferData.
 
